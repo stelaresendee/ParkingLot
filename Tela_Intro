@@ -1,0 +1,29 @@
+package com.example.parkinglots
+
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+
+
+class tela_intro : AppCompatActivity() {
+    lateinit var btnEntrar : Button
+    lateinit var btnCriar : Button
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_tela_intro)
+
+        btnCriar = findViewById(R.id.btnintrocriar)
+        btnEntrar = findViewById(R.id.btnintroentrar)
+
+        btnEntrar.setOnClickListener { btnentrar() }
+        btnCriar.setOnClickListener { btncriar() }
+    }
+
+    fun btncriar() {
+        startActivity(Intent(this, tela_cadastro::class.java))
+    }
+    fun btnentrar() {
+        startActivity(Intent(this, MainActivity::class.java))
+    }
+}
