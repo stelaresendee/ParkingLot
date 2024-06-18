@@ -1,0 +1,55 @@
+package com.example.parkinglots
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+
+class esqueceu_senha : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_esqueceu_senha)
+
+        var txtVoltar = findViewById<TextView>(R.id.txtVoltar)
+        var btnVoltar = findViewById<ImageButton>(R.id.btnVoltar)
+        val editTextEmail: EditText = findViewById(R.id.edtPlaca)
+        val btnRedefinir: Button = findViewById(R.id.btnRedefinir)
+
+        txtVoltar.setOnClickListener { VoltarTela() }
+        btnVoltar.setOnClickListener { VoltarTela() }
+
+        btnRedefinir.setOnClickListener {
+            val email = editTextEmail.text.toString().trim()
+
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Por favor, insira seu endereço de email.", Toast.LENGTH_SHORT).show()
+            } else {
+                enviarEmailRedefinicao(email)
+            }
+        }
+    }
+
+    private fun enviarEmailRedefinicao(email: String) {
+        val auth = FirebaseAuth.getInstance()
+
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    Toast.makeText(this, "Um email de redefinição de senha foi enviado para $email", Toast.LENGTH_SHORT).show()
+                } else {
+                    
+                    Toast.makeText(this, "Falha ao enviar email de redefinição de senha. Verifique o endereço de email e tente novamente.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun VoltarTela(){
+        startActivity(Intent(this,MainActivity::class.java))
+    }
+}
