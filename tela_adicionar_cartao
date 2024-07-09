@@ -1,0 +1,102 @@
+package com.example.parkinglots
+
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+
+class tela_adicionar_cartao : AppCompatActivity() {
+
+    private lateinit var nomeTitularEditText: EditText
+    private lateinit var numeroCartaoEditText: EditText
+    private lateinit var dataValidadeEditText: EditText
+    private lateinit var cvvEditText: EditText
+    private lateinit var tipoCartaoRadioGroup: RadioGroup
+    private lateinit var debitoRadioButton: RadioButton
+    private lateinit var creditoRadioButton: RadioButton
+    private lateinit var botaoSalvar: Button
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_tela_adicionar_cartao)
+
+        nomeTitularEditText = findViewById(R.id.nome_titular)
+        numeroCartaoEditText = findViewById(R.id.numero_cartao)
+        dataValidadeEditText = findViewById(R.id.data_validade)
+        cvvEditText = findViewById(R.id.cvv)
+        tipoCartaoRadioGroup = findViewById(R.id.tipo_cartao)
+        debitoRadioButton = findViewById(R.id.debito)
+        creditoRadioButton = findViewById(R.id.credito)
+        botaoSalvar = findViewById(R.id.botao_salvar)
+
+        dataValidadeEditText.addTextChangedListener(object : TextWatcher {
+            private var isUpdating = false
+            private val mask = "##/##"
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                if (isUpdating) return
+
+                val str = s.toString().replace("[^\\d]".toRegex(), "")
+                var formatted = ""
+                var i = 0
+                for (m in mask.toCharArray()) {
+                    if (m != '#' && str.length > i) {
+                        formatted += m
+                        continue
+                    }
+                    try {
+                        formatted += str[i]
+                    } catch (e: Exception) {
+                        break
+                    }
+                    i++
+                }
+
+                isUpdating = true
+                s?.replace(0, s.length, formatted)
+                isUpdating = false
+            }
+        })
+
+        botaoSalvar.setOnClickListener { salvarDetalhesCartao() }
+    }
+
+    private fun salvarDetalhesCartao() {
+        val nomeTitular = nomeTitularEditText.text.toString()
+        val numeroCartao = numeroCartaoEditText.text.toString()
+        val dataValidade = dataValidadeEditText.text.toString()
+        val cvv = cvvEditText.text.toString()
+
+        val tipoCartao = when (tipoCartaoRadioGroup.checkedRadioButtonId) {
+            R.id.debito -> "Débito"
+            R.id.credito -> "Crédito"
+            else -> ""
+        }
+
+
+        Toast.makeText(this, "Cartão $tipoCartao salvo com sucesso!", Toast.LENGTH_SHORT).show()
+
+
+        val intent = Intent(this, tela_exibir_cartao::class.java)
+        intent.putExtra("nomeTitular", nomeTitular)
+        intent.putExtra("numeroCartao", numeroCartao)
+        intent.putExtra("dataValidade", dataValidade)
+        intent.putExtra("cvv", cvv)
+        intent.putExtra("tipoCartao", tipoCartao)
+        startActivity(intent)
+
+
+        finish()
+    }
+
+}
