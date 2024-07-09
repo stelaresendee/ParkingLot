@@ -1,0 +1,76 @@
+package com.example.parkinglots
+
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+
+class tela_minha_conta : AppCompatActivity() {
+    var auth = FirebaseAuth.getInstance()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_tela_minha_conta)
+
+        val txtCartao: TextView = findViewById(R.id.txtCartao)
+        val txtsobrenomeUser: TextView = findViewById(R.id.txtSobrenomeUser)
+        val txtnameUser: TextView = findViewById(R.id.txtNomeUser)
+        val txtemailUser: TextView = findViewById(R.id.txtEmailUser)
+        val txtnumeroUser: TextView = findViewById(R.id.txtNumeroUser)
+        var txtcarroUser: TextView = findViewById(R.id.txtCarroUser)
+        var txtplacaUser: TextView = findViewById(R.id.txtPlacaUser)
+        var txtcadastrarVeiculo: TextView = findViewById(R.id.txtCadastrarVeiculo)
+        var txtSair: TextView = findViewById(R.id.txtSair)
+        var iconSair: ImageView = findViewById(R.id.iconSair)
+        val btnExcluirConta: Button = findViewById(R.id.btnExcluirConta)
+
+        txtSair.setOnClickListener {
+            startActivity(Intent(this,tela_intro::class.java))
+        }
+        iconSair.setOnClickListener {
+            startActivity(Intent(this,tela_intro::class.java))
+        }
+
+        txtcadastrarVeiculo.setOnClickListener {
+            startActivity(Intent(this,tela_cadastro_carro::class.java))
+        }
+        txtCartao.setOnClickListener {
+            startActivity(Intent(this,tela_adicionar_cartao::class.java))
+        }
+        btnExcluirConta.setOnClickListener {
+            // Chamar função para excluir a conta do Firebase
+            excluirContaFirebase()
+        }
+
+        val nome = intent.getStringExtra("NOME")
+        val sobrenome = intent.getStringExtra("SOBRENOME")
+        val email = intent.getStringExtra("EMAIL")
+        val numero = intent.getStringExtra("NUMERO")
+        val carro = intent.getStringExtra("MODELO")
+        val placa = intent.getStringExtra("PLACA")
+        txtnameUser.text = "$nome"
+        txtsobrenomeUser.text = "$sobrenome"
+        txtemailUser.text = "$email"
+        txtnumeroUser.text = "$numero"
+        txtcarroUser.text = "$carro"
+        txtplacaUser.text = "$placa"
+    }
+    private fun excluirContaFirebase() {
+
+        val user = auth.currentUser
+        user?.delete()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Conta excluída com sucesso.", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, tela_intro::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(this, "Falha ao excluir conta: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+}
