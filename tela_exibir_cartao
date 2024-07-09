@@ -1,0 +1,34 @@
+package com.example.parkinglots
+
+import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+
+
+class tela_exibir_cartao : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_tela_exibir_cartao)
+
+         var txtTitular: TextView = findViewById(R.id.txtTitular)
+         var txtNumCartao: TextView = findViewById(R.id.txtNumCartao)
+         var txtDataValidade: TextView = findViewById(R.id.txtDataValidade)
+         var txtCVV: TextView = findViewById(R.id.txtCVV)
+         var txtTipoCartao: TextView = findViewById(R.id.txtTipoCartao)
+
+
+        val nomeTitular = intent.getStringExtra("nomeTitular")
+        val numeroCartao = intent.getStringExtra("numeroCartao")
+        val dataValidade = intent.getStringExtra("dataValidade")
+        val cvv = intent.getStringExtra("cvv")
+        val tipoCartao = intent.getStringExtra("tipoCartao")
+
+        txtTitular.text = "Nome do Titular: $nomeTitular"
+        txtNumCartao.text = "Número do Cartão: $numeroCartao"
+        txtDataValidade.text = "Data de Validade: $dataValidade"
+        txtCVV.text = "CVV: $cvv"
+        txtTipoCartao.text = "Tipo de Cartão: $tipoCartao"
+    }
+}
