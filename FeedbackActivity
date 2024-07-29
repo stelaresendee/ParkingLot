@@ -1,0 +1,56 @@
+package com.example.parkinglots
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.RatingBar
+import android.widget.Toast
+
+
+class FeedbackActivity : AppCompatActivity(){
+
+    private lateinit var recyclerViewFeedback: RecyclerView
+    private lateinit var feedbackAdapter: FeedbackAdapter
+    private lateinit var ratingBarFeedbackInput: RatingBar
+    private lateinit var editTextFeedbackComment: EditText
+    private lateinit var buttonSubmitFeedback: Button
+
+    private val feedbackList = mutableListOf<Feedback>() // Use mutableListOf for adding new feedback
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_feedback) // Set the layout for this Activity
+
+        recyclerViewFeedback = findViewById(R.id.recyclerViewFeedback)
+        ratingBarFeedbackInput = findViewById(R.id.ratingBarFeedbackInput)
+        editTextFeedbackComment = findViewById(R.id.editTextFeedbackComment)
+        buttonSubmitFeedback = findViewById(R.id.buttonSubmitFeedback)
+
+        recyclerViewFeedback.layoutManager = LinearLayoutManager(this)
+        feedbackAdapter = FeedbackAdapter(feedbackList)
+        recyclerViewFeedback.adapter = feedbackAdapter
+
+        buttonSubmitFeedback.setOnClickListener {
+            submitFeedback()
+        }
+    }
+    private fun submitFeedback() {
+        val userName = "Usuário"
+        val rating = ratingBarFeedbackInput.rating
+        val comment = editTextFeedbackComment.text.toString()
+
+        if (comment.isNotBlank()) {
+            val newFeedback = Feedback(userName, rating, comment)
+            feedbackList.add(newFeedback)
+            feedbackAdapter.notifyDataSetChanged()
+            editTextFeedbackComment.text.clear()
+            ratingBarFeedbackInput.rating = 0f
+            Toast.makeText(this, "Feedback enviado!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Por favor, escreva um comentário.", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
